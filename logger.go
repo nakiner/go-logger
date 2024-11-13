@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 
+	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -95,6 +96,10 @@ func FromContext(ctx context.Context) *zap.SugaredLogger {
 
 	if logger, ok := ctx.Value(loggerContextKey).(*zap.SugaredLogger); ok {
 		l = logger
+	}
+
+	if spanContext := trace.SpanContextFromContext(ctx); spanContext.IsValid() {
+		l = l.With("trace_id", spanContext.TraceID().String())
 	}
 
 	return l

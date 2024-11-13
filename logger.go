@@ -8,6 +8,7 @@ import (
 	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"google.golang.org/grpc/grpclog"
 )
 
 type contextKey int
@@ -30,6 +31,7 @@ var (
 
 func init() { //nolint
 	SetLogger(New())
+	grpclog.SetLoggerV2(grpclog.NewLoggerV2(io.Discard, io.Discard, io.Discard))
 }
 
 // WithUniqueFields keep fields unique.

@@ -5,7 +5,6 @@ import (
 	"io"
 	"os"
 
-	"go.opentelemetry.io/otel/trace"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"google.golang.org/grpc/grpclog"
@@ -100,9 +99,7 @@ func FromContext(ctx context.Context) *zap.SugaredLogger {
 		l = logger
 	}
 
-	if spanContext := trace.SpanContextFromContext(ctx); spanContext.IsValid() {
-		l = l.With("trace_id", spanContext.TraceID().String())
-	}
+	WithTracingFields(ctx, l)
 
 	return l
 }
